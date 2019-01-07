@@ -31,10 +31,9 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
  * windows specified by drivers. For NO055 IMU Euler angle reads (i.e., {@link
  * BNO055IMU#getAngularOrientation()}), the time reduction is ~40%.
  *
- * Update: This issue is still present with SDK v4.0 and ExH firmware v1.8.2. The use of the new I2C
- * read command speeds up reads compared to v1.7.2, but the read window issue is still present.
- *
  * @link https://github.com/ftctechnh/ftc_app/issues/542
+ *
+ * Note: More testing is necessary with SDK v4.x and ExH firmware v1.8.x
  */
 public class LynxOptimizedI2cFactory {
     private static class BetterI2cDeviceSynchImplOnSimple extends I2cDeviceSynchImplOnSimple {
