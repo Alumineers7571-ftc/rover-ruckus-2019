@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.util.ENUMS;
@@ -50,11 +51,14 @@ public class Depot extends LinearOpMode{
 
     ENUMS.AutoStates robo = ENUMS.AutoStates.START;
 
+    Robot robot = new Robot();
 
-    SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
+    //SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        robot.init(hardwareMap, telemetry, true);
 
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
@@ -139,9 +143,14 @@ public class Depot extends LinearOpMode{
         vuforia.showDebug();
         vuforia.start();
 
-        //robot.tm.setTMUp();
+        robot.tm.setTMUp();
 
         telemetry.addLine("Ready");
+
+        waitForStart();
+
+        robot.hanger.moveToGround();
+
 
     }
 }

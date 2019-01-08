@@ -42,11 +42,11 @@ public class MineralSystem{
         intakeLeft = hardwareMap.crservo.get("intakeL");
         intakeRight = hardwareMap.crservo.get("intakeR");
 
-        pid = new PIDController(.007, 0, 0);
+        pid = new PIDController(.0005, 0, 0);
 
         pid.setSetpoint(0);
         pid.setOutputRange(0, power);
-        pid.setInputRange(-1120, 1120);
+        pid.setInputRange(-1120*2, 1120*2);
         pid.enable();
 
         pivoter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -61,28 +61,35 @@ public class MineralSystem{
         extendo.setPower(gamepad.right_stick_y);
 
         if(gamepad.left_bumper){
-            runIntake(-1);
-        } else if(gamepad.right_bumper) {
-            runIntake(0);
-        } else {
             runIntake(1);
+        } else if(gamepad.right_bumper) {
+            runIntake(-1);
+        } else {
+            runIntake(0);
         }
 
-        if(gamepad.left_trigger > 0.1){
+        if(gamepad.dpad_right){
 
             changePivotSetpoint(0);
 
-        } else if (gamepad.right_trigger > 0.1){
+        } else if (gamepad.dpad_down){
 
-            changePivotSetpoint(1120/2);
+            changePivotSetpoint(1680/2);
+
+        } else if (gamepad.dpad_up){
+
+            changePivotSetpoint(-1680);
 
         } else {
 
             correction = pid.performPID(pivoter.getCurrentPosition());
-            if (correction < 0.1 && correction > -0.1){
+            if (correction < 0.15 && correction > -0.15){
                 correction = 0;
             }
             pivoter.setPower(correction);
+
+            telemetry.addData("ticks", pivoter.getCurrentPosition());
+            telemetry.update();
 
         }
     }
