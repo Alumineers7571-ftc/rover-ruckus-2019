@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.OpModes.Auton.Test;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -8,24 +8,26 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveBase;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveBase;
+import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveREV;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /*
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous
-public class SplineTestOpMode extends LinearOpMode {
+public class DepotTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .splineTo(new Pose2d(30, 30, 0))
+                .splineTo(new Pose2d(45, 35, 0))
                 .waitFor(1)
-                .splineTo(new Pose2d(0, 0, 0))
+                .turn(Math.PI/4)
+                .forward(2)
+                .splineTo(new Pose2d())
                 .build();
 
         waitForStart();
