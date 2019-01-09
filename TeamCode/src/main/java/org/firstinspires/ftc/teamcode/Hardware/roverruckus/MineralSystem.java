@@ -78,7 +78,7 @@ public class MineralSystem{
 
         } else if (gamepad.dpad_left){
 
-            changePivotSetpoint(-1680/4);
+            changePivotSetpoint(-1680/4 * 3);
 
         } else if (gamepad.dpad_up){
 
