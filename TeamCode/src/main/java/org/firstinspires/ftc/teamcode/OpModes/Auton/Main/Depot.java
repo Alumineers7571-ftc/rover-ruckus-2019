@@ -149,7 +149,7 @@ public class Depot extends LinearOpMode{
         vuforia.start();
 
         Trajectory trajectory = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(24, 24, 0))
+                .forward(24)
                 .waitFor(1)
                 .splineTo(new Pose2d(12, 12, Math.toRadians(90)))
                 .waitFor(1)
