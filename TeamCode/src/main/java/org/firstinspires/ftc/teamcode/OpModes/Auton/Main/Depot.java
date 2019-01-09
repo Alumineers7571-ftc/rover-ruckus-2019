@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auton.Main;
 
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.Dogeforia;
@@ -17,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.ENUMS;
 
 import java.util.ArrayList;
@@ -143,13 +148,38 @@ public class Depot extends LinearOpMode{
         vuforia.showDebug();
         vuforia.start();
 
+        Trajectory trajectory = robot.drive.trajectoryBuilder()
+                .splineTo(new Pose2d(24, 24, 0))
+                .waitFor(1)
+                .splineTo(new Pose2d(12, 12, Math.toRadians(90)))
+                .waitFor(1)
+                .build();
+
         robot.tm.setTMUp();
 
         telemetry.addLine("Ready");
 
         waitForStart();
 
-        robot.hanger.moveToGround();
+        while (opModeIsActive() && !isStopRequested()) {
+
+            switch (robo) {
+
+                case START: {
+
+                    robot.drive.followTrajectory(trajectory);
+                    while (!isStopRequested() && robot.drive.isFollowingTrajectory()) {
+
+                        robot.drive.update();
+                    }
+
+                    robo = ENUMS.AutoStates.END;
+                    break;
+                }
+            }
+        }
+
+
 
 
     }
