@@ -68,13 +68,17 @@ public class MineralSystem{
             runIntake(0);
         }
 
-        if(gamepad.dpad_right){
+        if(gamepad.left_stick_y > 0.1){
+
+            changePivotSetpoint(gamepad.left_stick_y * 1680*2);
+
+        } else if(gamepad.dpad_right){
 
             changePivotSetpoint(0);
 
-        } else if (gamepad.dpad_down){
+        } else if (gamepad.dpad_left){
 
-            changePivotSetpoint(1680/2);
+            changePivotSetpoint(-1680/4);
 
         } else if (gamepad.dpad_up){
 
@@ -111,7 +115,7 @@ public class MineralSystem{
     }
 
     /*
-    changes the position that the pivoter will hold, setpoint > -1120 && setpoint < 1120
+    changes the position that the pivoter will hold
      */
     public void changePivotSetpoint(double setpoint){
 
