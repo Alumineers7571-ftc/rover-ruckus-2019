@@ -9,8 +9,8 @@ public class TeamMarkerer{
 
     Servo teamMarkerer;
 
-    final double POS_DOWN = 1;
-    final double POS_UP = 0.4;
+    final double POS_DOWN = 0.4;
+    final double POS_UP = 1;
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
         this.initialize(hardwareMap, telemetry);

@@ -15,6 +15,8 @@ public class MineralSystem{
 
     PIDController pid;
 
+    boolean pidOn = false;
+
     double correction, power = 0.7;
 
 
@@ -42,7 +44,7 @@ public class MineralSystem{
         intakeLeft = hardwareMap.crservo.get("intakeL");
         intakeRight = hardwareMap.crservo.get("intakeR");
 
-        pid = new PIDController(.0005, 0, 0);
+        pid = new PIDController(.005, 0, 0);
 
         pid.setSetpoint(0);
         pid.setOutputRange(0, power);
@@ -68,34 +70,42 @@ public class MineralSystem{
             runIntake(0);
         }
 
-        if(gamepad.left_stick_y > 0.1){
-
-            changePivotSetpoint(gamepad.left_stick_y * 1680*2);
-
-        } else if(gamepad.dpad_right){
-
-            changePivotSetpoint(0);
-
-        } else if (gamepad.dpad_left){
-
-            changePivotSetpoint(-1680/4 * 3);
-
-        } else if (gamepad.dpad_up){
-
-            changePivotSetpoint(-1680);
-
-        } else {
-
-            correction = pid.performPID(pivoter.getCurrentPosition());
-            if (correction < 0.15 && correction > -0.15){
-                correction = 0;
-            }
-            pivoter.setPower(correction);
-
-            telemetry.addData("ticks", pivoter.getCurrentPosition());
-            telemetry.update();
-
+        if(gamepad.left_stick_button){
+            pidOn = !pidOn;
         }
+
+        if(pidOn){
+
+            if (gamepad.dpad_right) {
+
+                changePivotSetpoint(0);
+
+            } else if (gamepad.dpad_left) {
+
+                changePivotSetpoint(-1680 / 4 * 3);
+
+            } else if (gamepad.dpad_up) {
+
+                changePivotSetpoint(-1580);
+
+            } else {
+
+                correction = pid.performPID(pivoter.getCurrentPosition());
+                if (correction < 0.08 && correction > -0.08) {
+                    correction = 0;
+                }
+                pivoter.setPower(correction);
+
+
+
+            }
+        } else {
+            pivoter.setPower(gamepad.left_stick_y);
+        }
+
+        telemetry.addData("correction", correction);
+        telemetry.addData("ticks", pivoter.getCurrentPosition());
+        telemetry.update();
     }
 
     public void runIntake(double power){

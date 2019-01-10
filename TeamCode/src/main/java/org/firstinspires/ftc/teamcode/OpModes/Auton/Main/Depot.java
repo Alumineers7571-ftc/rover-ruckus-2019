@@ -8,6 +8,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.Dogeforia;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -33,6 +34,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
+@Autonomous
 public class Depot extends LinearOpMode{
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -149,13 +151,12 @@ public class Depot extends LinearOpMode{
         vuforia.start();
 
         Trajectory trajectory = robot.drive.trajectoryBuilder()
-                .forward(24)
+                .splineTo(new Pose2d(20, 55, 0))
                 .waitFor(1)
-                .splineTo(new Pose2d(12, 12, Math.toRadians(90)))
-                .waitFor(1)
+                .turnTo(Math.PI/2)
                 .build();
 
-        robot.tm.setTMUp();
+        robot.tm.setTMDown();
 
         telemetry.addLine("Ready");
 
