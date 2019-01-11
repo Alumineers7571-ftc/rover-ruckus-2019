@@ -18,9 +18,7 @@ import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveREV;
  *
  * Note: this routine is *deprecated*; NewTrackWidthCalibrationOpMode is recommended instead.
  */
-@Config
-@Deprecated
-@Disabled
+@Config //0.97
 @Autonomous
 public class TrackWidthCalibrationOpMode extends LinearOpMode {
     public static int TOTAL_REVOLUTIONS = 10;
