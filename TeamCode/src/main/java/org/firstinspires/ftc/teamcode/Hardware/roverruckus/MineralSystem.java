@@ -49,6 +49,7 @@ public class MineralSystem{
         pid.setSetpoint(0);
         pid.setOutputRange(0, power);
         pid.setInputRange(-1120*2, 1120*2);
+        pid.setTolerance(1);
         pid.enable();
 
         pivoter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -91,9 +92,9 @@ public class MineralSystem{
             } else {
 
                 correction = pid.performPID(pivoter.getCurrentPosition());
-                if (correction < 0.08 && correction > -0.08) {
+                /*if (correction < 0.08 && correction > -0.08) {
                     correction = 0;
-                }
+                }*/
                 pivoter.setPower(correction);
 
 

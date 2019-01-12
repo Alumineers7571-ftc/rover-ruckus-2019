@@ -19,7 +19,7 @@ public class TeleBOP extends LinearOpMode {
 
         while(!isStarted() && !isStopRequested()){
 
-            telemetry.addData("opmode:", "waiting....");
+            telemetry.addData("opmode:", "waiting for start....");
             telemetry.update();
         }
 

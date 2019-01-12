@@ -8,6 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,14 +27,27 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
+    private PIDController pidRotate;
+
+    Orientation lastAngles = new Orientation();
+
+    double correction, power = 0.7;
 
     public SampleMecanumDriveREV(HardwareMap hardwareMap) {
         super();
 
+        pidRotate = new PIDController(.005, 0, 0);
+
+        pidRotate.setSetpoint(0);
+        pidRotate.setOutputRange(0, power);
+        pidRotate.setInputRange(-180, 180);
+        pidRotate.enable();
+
+
         // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         imu.initialize(parameters);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "fl");
@@ -93,4 +111,15 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public double getExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
     }
+
+    @Override
+    public Orientation getAOrientation(AxesReference ref, AxesOrder order, AngleUnit unit) {
+        return imu.getAngularOrientation(ref, order, unit);
+    }
+
+    @Override
+    public void setThrottle(double power){
+        setMotorPowers(power, power, power, power);
+    }
+
 }

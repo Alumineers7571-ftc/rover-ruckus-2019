@@ -62,9 +62,9 @@ public class Hanger{
 
     public void controlHanger(Gamepad gamepad){
 
-        hanger.setPower(gamepad.right_trigger - gamepad.left_trigger);
+        hanger.setPower(gamepad.right_trigger);
 
-        if(gamepad.right_stick_button && !isTouched()){
+        if(gamepad.left_trigger > 0.05 && !isTouched()){
             moveToLowerLimit();
         }
 

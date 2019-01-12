@@ -14,6 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -22,9 +25,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveBase;
 import org.firstinspires.ftc.teamcode.Hardware.drive.SampleMecanumDriveREV;
+import org.firstinspires.ftc.teamcode.util.AssetsTrajectoryLoader;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.ENUMS;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +58,8 @@ public class Depot extends LinearOpMode{
     WebcamName webcamName;
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
+    PIDController pidRotate;
+
     GoldAlignDetector detector;
 
     ENUMS.GoldPosition goldPosition = ENUMS.GoldPosition.UNKNOWN;
@@ -60,12 +68,19 @@ public class Depot extends LinearOpMode{
 
     Robot robot = new Robot();
 
+    Orientation lastAngles = new Orientation();
+    double globalAngle, power = .7, correction;
+
+    int xOfGold = 20;
+
     //SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap, telemetry, true);
+
+        pidRotate = new PIDController(0.005, 0, 0);
 
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
@@ -150,27 +165,64 @@ public class Depot extends LinearOpMode{
         vuforia.showDebug();
         vuforia.start();
 
-        Trajectory trajectory = robot.drive.trajectoryBuilder()
+        /*Trajectory landerToSample = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(20, 55, 0))
-                .waitFor(1)
-                .turnTo(Math.PI/2)
                 .build();
-
+*/
         robot.tm.setTMDown();
 
-        telemetry.addLine("Ready");
+        AssetsTrajectoryLoader loader = new AssetsTrajectoryLoader();
 
-        waitForStart();
+        Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
+        try {
+            leftGoldTrajectory = AssetsTrajectoryLoader.load("landerToLeftGold");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        Trajectory trajectory = robot.drive.trajectoryBuilder()
+                .forward(6)
+                .waitFor(1)
+                .back(6)
+                .build();
+
+        while(!isStarted() && !isStopRequested()){
+
+            telemetry.addData("opmode:", "waiting for start....");
+            telemetry.update();
+        }
         while (opModeIsActive() && !isStopRequested()) {
 
             switch (robo) {
 
                 case START: {
 
+                    robo = ENUMS.AutoStates.DROPDOWN;
+                    break;
+                }
+
+                case DROPDOWN: {
+
+                    while(opModeIsActive() && robot.hanger.moveToGround());
+
+                    robo = ENUMS.AutoStates.FINDGOLD;
+                    break;
+                }
+
+                case FINDGOLD: {
+
+                    if(detector.getXPosition() < 20) {
+                        trajectory = leftGoldTrajectory;
+                    }
+
+                    robo = ENUMS.AutoStates.MOVETOSAMPLE;
+                    break;
+                }
+
+                case MOVETOSAMPLE: {
+
                     robot.drive.followTrajectory(trajectory);
                     while (!isStopRequested() && robot.drive.isFollowingTrajectory()) {
-
                         robot.drive.update();
                     }
 
@@ -178,10 +230,73 @@ public class Depot extends LinearOpMode{
                     break;
                 }
             }
+
+            //telemetry.log().clear();
+            telemetry.log().add("x of gold: " + detector.getXPosition());
+            telemetry.update();
+
         }
 
 
 
 
     }
+
+    private void resetAngle() {
+        lastAngles = robot.drive.getAOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
+
+    public void rotate(int degrees) {
+        // restart imu angle tracking.
+        resetAngle();
+
+        // start pid controller. PID controller will monitor the turn angle with respect to the
+        // target angle and reduce power as we approach the target angle with a minimum of 20%.
+        // This is to prevent the robots momentum from overshooting the turn after we turn off the
+        // power. The PID controller reports onTarget() = true when the difference between turn
+        // angle and target angle is within 2% of target (tolerance). This helps prevent overshoot.
+        // The minimum power is determined by testing and must enough to prevent motor stall and
+        // complete the turn. Note: if the gap between the starting power and the stall (minimum)
+        // power is small, overshoot may still occur. Overshoot is dependant on the motor and
+        // gearing configuration, starting power, weight of the robot and the on target tolerance.
+
+        pidRotate.reset();
+        pidRotate.setSetpoint(degrees);
+        pidRotate.setInputRange(0, 90);
+        pidRotate.setOutputRange(.20, power);
+        pidRotate.setTolerance(1);
+        pidRotate.enable();
+
+        // rb.drive.getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        // rotate until turn is completed.
+
+        if (degrees < 0) {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && robot.drive.getExternalHeading() == 0) {
+                robot.drive.setMotorPowers(power, power, -power, -power);
+                sleep(100);
+            }
+
+            do {
+                power = pidRotate.performPID(robot.drive.getExternalHeading()); // power will be - on right turn.
+                robot.drive.setMotorPowers(-power, -power, power, power);
+            } while (opModeIsActive() && !pidRotate.onTarget());
+        } else    // left turn.
+            do {
+                power = pidRotate.performPID(robot.drive.getExternalHeading()); // power will be + on left turn.
+                robot.drive.setMotorPowers(-power, -power, power, power);
+            } while (opModeIsActive() && !pidRotate.onTarget());
+
+        // turn the motors off.
+        robot.drive.setThrottle(0);
+
+        // wait for rotation to stop.
+        sleep(500);
+
+        // reset angle tracking on new heading.
+        resetAngle();
+    }
+
 }
