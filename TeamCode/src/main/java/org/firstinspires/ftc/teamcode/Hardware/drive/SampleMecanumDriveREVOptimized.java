@@ -6,6 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.util.LynxOptimizedI2cFactory;
 import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -76,6 +80,16 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
                     coefficients.kP, coefficients.kI, coefficients.kD, 1
             ));
         }
+    }
+
+    @Override
+    public Orientation getAOrientation(AxesReference intrinsic, AxesOrder zyx, AngleUnit degrees) {
+        return null;
+    }
+
+    @Override
+    public void setThrottle(double power) {
+
     }
 
     @NotNull
