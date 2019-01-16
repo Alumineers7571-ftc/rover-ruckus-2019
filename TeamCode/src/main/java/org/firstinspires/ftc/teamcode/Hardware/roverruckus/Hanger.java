@@ -18,6 +18,8 @@ public class Hanger{
 
     DigitalChannel digitalTouch;  // Hardware Device Object
 
+    boolean isAtGround = false;
+
     final double SENSOR_IN_FROM_GROUND = 2.7;
 
     public Hanger(){
@@ -42,6 +44,8 @@ public class Hanger{
 
         double startingDistanceIn = distanceSensor.getDistance(DistanceUnit.INCH);
         boolean scored = false;
+
+        isAtGround = false;
 
         if(startingDistanceIn < 4){
             scored = false;
@@ -76,17 +80,17 @@ public class Hanger{
 
     }
 
-    public boolean moveToGround(){
+    public void moveToGround(){
 
         if(distanceSensor.getDistance(DistanceUnit.INCH) < (SENSOR_IN_FROM_GROUND)){
 
             hanger.setPower(0);
-            return true;
+            isAtGround = true;
 
         } else {
 
-            hanger.setPower(1);
-            return false;
+            hanger.setPower(0.8);
+            isAtGround = false;
 
         }
 
@@ -110,6 +114,11 @@ public class Hanger{
 
     public boolean isTouched(){
         return !digitalTouch.getState();
+    }
+
+    public boolean isAtGround(){
+
+        return isAtGround;
     }
 
 

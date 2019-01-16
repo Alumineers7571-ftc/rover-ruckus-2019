@@ -23,38 +23,28 @@ public class SplineTestOpMode extends LinearOpMode {
         SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .splineTo(new Pose2d(45, 35, 0))
-                .waitFor(1)
-                .turn(Math.PI/4)
-                .forward(2)
-                .splineTo(new Pose2d())
+                .splineTo(new Pose2d(35, 40, 0))
+                .back(16)
+                .turn(-Math.PI/4)
                 .build();
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        drive.followTrajectory(trajectory);
+        /*drive.followTrajectory(trajectory);
         while (!isStopRequested() && drive.isFollowingTrajectory()) {
-            Pose2d currentPose = drive.getPoseEstimate();
 
-            TelemetryPacket packet = new TelemetryPacket();
-            Canvas fieldOverlay = packet.fieldOverlay();
-
-            packet.put("x", currentPose.getX());
-            packet.put("y", currentPose.getY());
-            packet.put("heading", currentPose.getHeading());
-
-            fieldOverlay.setStrokeWidth(4);
-            fieldOverlay.setStroke("green");
-            DashboardUtil.drawSampledTrajectory(fieldOverlay, trajectory);
-
-            fieldOverlay.setFill("blue");
-            fieldOverlay.fillCircle(currentPose.getX(), currentPose.getY(), 3);
-
-            dashboard.sendTelemetryPacket(packet);
 
             drive.update();
         }
+        */
+
+        while (opModeIsActive()){
+
+
+
+        }
+
     }
 }

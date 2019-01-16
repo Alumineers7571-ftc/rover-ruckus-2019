@@ -175,16 +175,20 @@ public class Depot extends LinearOpMode{
         AssetsTrajectoryLoader loader = new AssetsTrajectoryLoader();
 
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
-        try {
-            leftGoldTrajectory = AssetsTrajectoryLoader.load("landerToLeftGold");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            rightGold = AssetsTrajectoryLoader.load("landerToRightGold");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        leftGoldTrajectory = robot.drive.trajectoryBuilder()
+                .splineTo(new Pose2d(45, 35, 0))
+                .waitFor(1)
+                .turn(Math.PI/4)
+                .forward(2)
+                .build();
+
+        rightGold = robot.drive.trajectoryBuilder()
+                .splineTo(new Pose2d(-45, 35, 0))
+                .waitFor(1)
+                .turn(Math.PI/4)
+                .forward(2)
+                .build();
 
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
                 .forward(24)
@@ -227,9 +231,11 @@ public class Depot extends LinearOpMode{
 
                 case DROPDOWN: {
 
-                    while(opModeIsActive() && !isStopRequested() && !robot.hanger.moveToGround())
+                    while(opModeIsActive() && !robot.hanger.isAtGround()){
+                        robot.hanger.moveToGround();
+                    }
 
-                    robo = ENUMS.AutoStates.FINDGOLD;
+                    robo = ENUMS.AutoStates.MOVETOSAMPLE;
                     break;
                 }
 
@@ -243,10 +249,9 @@ public class Depot extends LinearOpMode{
 
                 case MOVETOSAMPLE: {
 
-                    robot.drive.followTrajectory(sampleTrajectory);
-                    while (!isStopRequested() && robot.drive.isFollowingTrajectory()) {
-                        robot.drive.update();
-                    }
+
+
+
 
                     robo = ENUMS.AutoStates.END;
                     break;
