@@ -186,7 +186,7 @@ public class Depot extends LinearOpMode{
             e.printStackTrace();
         }
 
-        Trajectory trajectory = robot.drive.trajectoryBuilder()
+        Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
                 .forward(24)
                 .build();
 
@@ -195,14 +195,14 @@ public class Depot extends LinearOpMode{
             xPos = detector.getXPosition();
 
             if(detector.isFound()) {
-                if (xPos > -10 && xPos < 200) {
+                if (xPos > -10 && xPos < 180) {
                     goldPos = ENUMS.GoldPosition.LEFT;
-                    trajectory = leftGoldTrajectory;
-                } else if (xPos >= 200 && xPos < 400) {
+                    sampleTrajectory = leftGoldTrajectory;
+                } else if (xPos >= 180 && xPos < 420) {
                     goldPos = ENUMS.GoldPosition.CENTER;
-                } else if (xPos >= 400 && xPos < 610) {
+                } else if (xPos >= 420 && xPos < 610) {
                     goldPos = ENUMS.GoldPosition.RIGHT;
-                    trajectory = rightGold;
+                    sampleTrajectory = rightGold;
                 }
             } else {
                 goldPos = ENUMS.GoldPosition.UNKNOWN;
@@ -243,7 +243,7 @@ public class Depot extends LinearOpMode{
 
                 case MOVETOSAMPLE: {
 
-                    robot.drive.followTrajectory(trajectory);
+                    robot.drive.followTrajectory(sampleTrajectory);
                     while (!isStopRequested() && robot.drive.isFollowingTrajectory()) {
                         robot.drive.update();
                     }
@@ -259,10 +259,6 @@ public class Depot extends LinearOpMode{
             telemetry.update();
 
         }
-
-
-
-
     }
 
     private void resetAngle() {
