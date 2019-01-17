@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hardware.drive;
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.path.Path;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -28,6 +30,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
     private PIDController pidRotate;
+
+    Trajectory trajectory;
 
     Orientation lastAngles = new Orientation();
 
@@ -121,5 +125,7 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
     public void setThrottle(double power){
         setMotorPowers(power, power, power, power);
     }
+
+
 
 }

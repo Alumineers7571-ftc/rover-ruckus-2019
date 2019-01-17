@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.005, 0, 0);
 
 
     private DriveConstraints constraints;
@@ -39,7 +39,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     }
 
     public TrajectoryBuilder trajectoryBuilder() {
-        return new TrajectoryBuilder(getPoseEstimate(), constraints);
+        //return new TrajectoryBuilder(getPoseEstimate(), constraints);
+        // changed to mess around 1/16 :)
+        return new TrajectoryBuilder(new Pose2d(0,0,0), constraints);
     }
 
     public void followTrajectory(Trajectory trajectory) {

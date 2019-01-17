@@ -170,8 +170,6 @@ public class Depot extends LinearOpMode{
                 .splineTo(new Pose2d(20, 55, 0))
                 .build();
 */
-        robot.tm.setTMDown();
-
         AssetsTrajectoryLoader loader = new AssetsTrajectoryLoader();
 
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;

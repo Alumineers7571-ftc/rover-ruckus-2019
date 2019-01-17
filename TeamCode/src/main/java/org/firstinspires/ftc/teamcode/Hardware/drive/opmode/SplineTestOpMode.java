@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.disnodeteam.dogecv.math.MathFTC;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -32,19 +33,11 @@ public class SplineTestOpMode extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        /*drive.followTrajectory(trajectory);
+        drive.followTrajectory(trajectory);
         while (!isStopRequested() && drive.isFollowingTrajectory()) {
 
 
             drive.update();
         }
-        */
-
-        while (opModeIsActive()){
-
-
-
-        }
-
     }
 }

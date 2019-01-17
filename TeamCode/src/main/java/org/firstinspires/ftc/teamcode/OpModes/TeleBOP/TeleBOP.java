@@ -33,7 +33,5 @@ public class TeleBOP extends LinearOpMode {
 
             idle();
         }
-
-
     }
 }
