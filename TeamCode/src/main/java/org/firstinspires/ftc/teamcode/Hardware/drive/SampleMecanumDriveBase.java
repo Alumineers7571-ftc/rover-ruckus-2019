@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -55,6 +56,12 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public void update() {
         updatePoseEstimate();
         updateFollower();
+    }
+
+    public void setDirectionReverse(DcMotorSimple.Direction direction){
+    }
+
+    public void setDirectionForwards(DcMotorSimple.Direction direction){
     }
 
     public boolean isFollowingTrajectory() {

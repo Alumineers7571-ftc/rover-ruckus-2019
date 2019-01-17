@@ -111,6 +111,21 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         rightFront.setPower(v3);
     }
 
+    public void setDirectionReverse(DcMotorSimple.Direction direction){
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void setDirectionForwards(DcMotorSimple.Direction direction){
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+
     @Override
     public double getExternalHeading() {
         return imu.getAngularOrientation().firstAngle;

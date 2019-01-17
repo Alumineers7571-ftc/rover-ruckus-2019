@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.OpModes.Auton.Main;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.path.Path;
+import com.acmerobotics.roadrunner.path.QuinticSplineSegment;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
@@ -10,6 +12,7 @@ import com.disnodeteam.dogecv.Dogeforia;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -175,22 +178,21 @@ public class Depot extends LinearOpMode{
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(45, 35, 0))
-                .waitFor(1)
-                .turn(Math.PI/4)
-                .forward(2)
+                .splineTo(new Pose2d(40, 32.5, 0))
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(-45, 35, 0))
-                .waitFor(1)
-                .turn(Math.PI/4)
-                .forward(2)
+                .splineTo(new Pose2d(40, -32.5, 0))
                 .build();
 
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
                 .forward(24)
                 .build();
+
+        Path sampleToDepot = new Path(new QuinticSplineSegment(
+                new QuinticSplineSegment.Waypoint(0, 0, 0, 0), // start position and derivatives
+                new QuinticSplineSegment.Waypoint(36.83*2, 101.6, 0, 0) // end position and derivatives
+        ));
 
         while(!isStarted() && !isStopRequested()){
 
@@ -232,6 +234,10 @@ public class Depot extends LinearOpMode{
                     while(opModeIsActive() && !robot.hanger.isAtGround()){
                         robot.hanger.moveToGround();
                     }
+                    robot.hanger.controlHanger(-.3);
+                    sleep(300);
+                    robot.hanger.controlHanger(0);
+                    rotate(-180);
 
                     robo = ENUMS.AutoStates.MOVETOSAMPLE;
                     break;
@@ -247,9 +253,17 @@ public class Depot extends LinearOpMode{
 
                 case MOVETOSAMPLE: {
 
+                    robot.drive.setDirectionReverse(DcMotorSimple.Direction.FORWARD);
 
+                    robot.drive.followTrajectory(sampleTrajectory);
 
+                    while(!isStopRequested() && robot.drive.isFollowingTrajectory()){
+                        robot.drive.update();
+                    }
 
+                    robot.drive.setDirectionForwards(DcMotorSimple.Direction.FORWARD);
+
+                    rotate(-45);
 
                     robo = ENUMS.AutoStates.END;
                     break;
@@ -284,7 +298,7 @@ public class Depot extends LinearOpMode{
 
         pidRotate.reset();
         pidRotate.setSetpoint(degrees);
-        pidRotate.setInputRange(0, 90);
+        pidRotate.setInputRange(0, 180);
         pidRotate.setOutputRange(.20, power);
         pidRotate.setTolerance(1);
         pidRotate.enable();

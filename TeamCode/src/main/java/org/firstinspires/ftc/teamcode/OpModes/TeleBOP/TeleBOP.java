@@ -29,7 +29,7 @@ public class TeleBOP extends LinearOpMode {
             robot.drive.setVelocity(new Pose2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x));
 
             robot.mineralSystem.controlSystem(gamepad2, telemetry);
-            robot.hanger.controlHanger(gamepad2);
+            robot.hanger.controlHanger(gamepad1);
 
             idle();
         }

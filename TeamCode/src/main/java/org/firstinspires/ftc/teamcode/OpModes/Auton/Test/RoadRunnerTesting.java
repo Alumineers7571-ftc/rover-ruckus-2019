@@ -32,20 +32,26 @@ public class RoadRunnerTesting extends LinearOpMode{
         Path path = new Path(new QuinticSplineSegment(
                 new QuinticSplineSegment.Waypoint(10, 10, 10, 0), // start position and derivatives
                 new QuinticSplineSegment.Waypoint(20, 20, 0, 10) // end position and derivatives
-        ));
-
-        Path constantHeadingSpline = new Path(new QuinticSplineSegment(
-                new QuinticSplineSegment.Waypoint(10, 10, 10, 0), // start position and derivatives
-                new QuinticSplineSegment.Waypoint(20, 20, 0, 10) // end position and derivatives
         ), new ConstantInterpolator(Math.toRadians(45)));
 
+        Path constantHeadingSpline = new Path(new QuinticSplineSegment(
+                new QuinticSplineSegment.Waypoint(0, 0, 0, 0), // start position and derivatives
+                new QuinticSplineSegment.Waypoint(0, 101.6, 0, 0) // end position and derivatives
+        ));
+
+        Path constantHeadingSpline2 = new Path(new QuinticSplineSegment(
+                new QuinticSplineSegment.Waypoint(0, 0, 0, 0), // start position and derivatives
+                new QuinticSplineSegment.Waypoint(36.83*2, 101.6, 0, 0) // end position and derivatives
+        ));
+
         Trajectory trajectoryBasic = new Trajectory(Arrays.asList(
-                new PathTrajectorySegment(path, constraints)
+                new PathTrajectorySegment(constantHeadingSpline2, constraints)
         ));
 
         Trajectory constantHeadingTrajectory = new Trajectory(Arrays.asList(
-                new PathTrajectorySegment(path, constraints)
+                new PathTrajectorySegment(constantHeadingSpline, constraints)
         ));
+
 
         while(!isStarted() && !isStopRequested()){
 
@@ -53,10 +59,10 @@ public class RoadRunnerTesting extends LinearOpMode{
             telemetry.update();
         }
 
-        drive.followTrajectory(trajectoryBasic);
+        /*drive.followTrajectory(trajectoryBasic);
         while(!isStopRequested() && drive.isFollowingTrajectory()){
             drive.update();
-        }
+        }*/
 
         drive.followTrajectory(constantHeadingTrajectory);
         while(!isStopRequested() && drive.isFollowingTrajectory()){

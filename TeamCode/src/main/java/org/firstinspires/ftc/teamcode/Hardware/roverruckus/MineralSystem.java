@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PIDController;
@@ -21,6 +22,8 @@ public class MineralSystem{
 
 
     CRServo intakeLeft, intakeRight;
+
+    Servo gate;
 
     private static final double SERVO_LITTLE_POS = .25;
     private static final double SERVO_UP_POS = 1;
@@ -43,6 +46,8 @@ public class MineralSystem{
 
         intakeLeft = hardwareMap.crservo.get("intakeL");
         intakeRight = hardwareMap.crservo.get("intakeR");
+
+        gate = hardwareMap.servo.get("gate");
 
         pid = new PIDController(.005, 0, 0);
 
@@ -69,6 +74,12 @@ public class MineralSystem{
             runIntake(-1);
         } else {
             runIntake(0);
+        }
+
+        if(gamepad.b){
+            gate.setPosition(1);
+        } else {
+            gate.setPosition(0);
         }
 
         if(gamepad.left_stick_button){
