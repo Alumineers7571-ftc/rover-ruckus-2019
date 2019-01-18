@@ -45,7 +45,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
 @Autonomous
-public class Depot extends LinearOpMode{
+public class Crater extends LinearOpMode{
 
     private ElapsedTime runtime = new ElapsedTime();
     private static final float mmPerInch = 25.4f;
@@ -84,11 +84,11 @@ public class Depot extends LinearOpMode{
 
         robot.init(hardwareMap, telemetry, true);
 
-        pidRotate = new PIDController(0.005, 0, 0);
+        pidRotate = new PIDController(0.01, 0, 0);
 
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters vuforiaParameters = new VuforiaLocalizer.Parameters();
 
         vuforiaParameters.vuforiaLicenseKey = "AWbfTmn/////AAABmY0xuIe3C0RHvL3XuzRxyEmOT2OekXBSbqN2jot1si3OGBObwWadfitJR/D6Vk8VEBiW0HG2Q8UAEd0//OliF9aWCRmyDJ1mMqKCJZxpZemfT5ELFuWnJIZWUkKyjQfDNe2RIaAh0ermSxF4Bq77IDFirgggdYJoRIyi2Ys7Gl9lD/tSonV8OnldIN/Ove4/MtEBJTKHqjUEjC5U2khV+26AqkeqbxhFTNiIMl0LcmSSfugGhmWFGFtuPtp/+flPBRGoBO+tSl9P2sV4mSUBE/WrpHqB0Jd/tAmeNvbtgQXtZEGYc/9NszwRLVNl9k13vrBcgsiNxs2UY5xAvA4Wb6LN7Yu+tChwc+qBiVKAQe09\n";
@@ -98,6 +98,8 @@ public class Depot extends LinearOpMode{
 
         vuforia = new Dogeforia(vuforiaParameters);
         vuforia.enableConvertFrameToBitmap();
+
+        /*
 
         VuforiaTrackables targetsRoverRuckus = this.vuforia.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
@@ -109,7 +111,7 @@ public class Depot extends LinearOpMode{
         VuforiaTrackable backSpace = targetsRoverRuckus.get(3);
         backSpace.setName("Back-Space");
 
-        // For convenience, gather together all the trackable objects in one easily-iterable collection */
+        //For convenience, gather together all the trackable objects in one easily-iterable collection
 
         allTrackables.addAll(targetsRoverRuckus);
 
@@ -149,13 +151,13 @@ public class Depot extends LinearOpMode{
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, vuforiaParameters.cameraDirection);
         }
 
-        targetsRoverRuckus.activate();
+        targetsRoverRuckus.activate(); */
 
         detector = new GoldAlignDetector();
         detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0, true);
         detector.useDefaults();
 
-        detector.downscale = 0.4; // How much to downscale the input frames
+        detector.downscale = 0.5; // How much to downscale the input frames
 
         detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
@@ -178,15 +180,15 @@ public class Depot extends LinearOpMode{
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(40, 32.5, 0))
-                .build();
-
-        rightGold = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, -32.5, 0))
                 .build();
 
+        rightGold = robot.drive.trajectoryBuilder()
+                .splineTo(new Pose2d(40, 32.5, 0))
+                .build();
+
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
-                .forward(24)
+                .forward(40)
                 .build();
 
         Path sampleToDepot = new Path(new QuinticSplineSegment(
@@ -224,6 +226,9 @@ public class Depot extends LinearOpMode{
             switch (robo) {
 
                 case START: {
+
+                    telemetry.addLine("GOLD LOCATION: " + goldPos);
+                    telemetry.update();
 
                     robo = ENUMS.AutoStates.DROPDOWN;
                     break;
