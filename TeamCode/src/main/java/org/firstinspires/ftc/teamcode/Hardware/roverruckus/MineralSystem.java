@@ -15,7 +15,7 @@ public class MineralSystem{
 
     DcMotorEx extendo, pivoter;
 
-    PIDController pid;
+    PIDController pid, pidExtendo;
 
     boolean pidOn = false;
 
@@ -54,9 +54,12 @@ public class MineralSystem{
 
         pid.setSetpoint(0);
         pid.setOutputRange(0, power);
-        pid.setInputRange(-1120*2, 1120*2);
+        pid.setInputRange(-1120*4, 1120*4);
         pid.setTolerance(1);
         pid.enable();
+
+        extendo.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         pivoter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pivoter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -67,7 +70,16 @@ public class MineralSystem{
 
     public void controlSystem(Gamepad gamepad, Telemetry telemetry){
 
-        extendo.setPower(gamepad.right_stick_y);
+        if(pidOn){
+
+            correction = pid.performPID(extendo.getCurrentPosition());
+            extendo.setPower(correction);
+
+        } else {
+
+            extendo.setPower(gamepad.right_stick_y);
+
+        }
 
         if(gamepad.left_bumper){
             runIntake(-1);
@@ -77,43 +89,17 @@ public class MineralSystem{
             runIntake(0);
         }
 
-        gate.setPosition(Range.clip(Math.abs(gamepad.right_trigger - 1), 0, 0.6));
+        gate.setPosition(Range.clip(Math.abs(gamepad.right_trigger - 1), 0.4, 1));
 
-        if(gamepad.left_stick_button){
+        if(gamepad.right_stick_button){
             pidOn = !pidOn;
         }
 
-        if(pidOn){
 
-            if (gamepad.dpad_right) {
+        pivoter.setPower(gamepad.left_stick_y);
 
-                changePivotSetpoint(0);
-
-            } else if (gamepad.dpad_left) {
-
-                changePivotSetpoint(-1680 / 4 * 3);
-
-            } else if (gamepad.dpad_up) {
-
-                changePivotSetpoint(-1580);
-
-            } else {
-
-                correction = pid.performPID(pivoter.getCurrentPosition());
-                /*if (correction < 0.08 && correction > -0.08) {
-                    correction = 0;
-                }*/
-                pivoter.setPower(correction);
-
-
-
-            }
-        } else {
-            pivoter.setPower(gamepad.left_stick_y);
-        }
-
-        telemetry.addData("correction", correction);
-        telemetry.addData("ticks", pivoter.getCurrentPosition());
+        telemetry.addData("extendo correction", correction);
+        telemetry.addData("extendo ticks", extendo.getCurrentPosition());
         telemetry.update();
     }
 

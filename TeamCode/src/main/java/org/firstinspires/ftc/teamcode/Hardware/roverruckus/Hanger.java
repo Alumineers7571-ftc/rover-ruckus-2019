@@ -89,7 +89,7 @@ public class Hanger{
 
         } else {
 
-            hanger.setPower(0.8);
+            hanger.setPower(1);
             isAtGround = false;
 
         }

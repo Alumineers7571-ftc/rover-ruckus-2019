@@ -45,7 +45,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
 @Autonomous
-public class Crater extends LinearOpMode{
+public class Depot extends LinearOpMode{
 
     private ElapsedTime runtime = new ElapsedTime();
     private static final float mmPerInch = 25.4f;
@@ -181,19 +181,23 @@ public class Crater extends LinearOpMode{
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, -30, 0))
+                .waitFor(10)
+                .splineTo(new Pose2d(40, 0, 0))
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, 30, 0))
+                .waitFor(10)
+                .splineTo(new Pose2d(40, 0, 0))
                 .build();
 
         middleGold = robot.drive.trajectoryBuilder()
                 .forward(40)
-                .build();
-
-        Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
+                .waitFor(10)
                 .forward(40)
                 .build();
+
+        Trajectory sampleTrajectory = null;
 
         Path sampleToDepot = new Path(new QuinticSplineSegment(
                 new QuinticSplineSegment.Waypoint(0, 0, 0, 0), // start position and derivatives
@@ -247,7 +251,7 @@ public class Crater extends LinearOpMode{
                     robot.hanger.controlHanger(-.3);
                     sleep(300);
                     robot.hanger.controlHanger(0);
-                    rotate(-180);
+                    rotate(-175);
 
                     robo = ENUMS.AutoStates.MOVETOSAMPLE;
                     break;
@@ -274,6 +278,8 @@ public class Crater extends LinearOpMode{
                     robot.drive.setDirectionForwards(DcMotorSimple.Direction.FORWARD);
 
                     //rotate(-45);
+
+                    robot.tm.setTMDown();
 
                     robo = ENUMS.AutoStates.END;
                     break;
