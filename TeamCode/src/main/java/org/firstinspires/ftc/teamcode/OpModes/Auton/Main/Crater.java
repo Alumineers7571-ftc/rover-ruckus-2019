@@ -268,7 +268,7 @@ public class Crater extends LinearOpMode{
 
                     robot.drive.setDirectionForwards(DcMotorSimple.Direction.FORWARD);
 
-                    rotate(-45);
+                    //rotate(-45);
 
                     robo = ENUMS.AutoStates.END;
                     break;

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PIDController;
@@ -69,18 +70,14 @@ public class MineralSystem{
         extendo.setPower(gamepad.right_stick_y);
 
         if(gamepad.left_bumper){
-            runIntake(1);
-        } else if(gamepad.right_bumper) {
             runIntake(-1);
+        } else if(gamepad.right_bumper) {
+            runIntake(1);
         } else {
             runIntake(0);
         }
 
-        if(gamepad.b){
-            gate.setPosition(1);
-        } else {
-            gate.setPosition(0);
-        }
+        gate.setPosition(Range.clip(Math.abs(gamepad.right_trigger - 1), 0, 0.6));
 
         if(gamepad.left_stick_button){
             pidOn = !pidOn;

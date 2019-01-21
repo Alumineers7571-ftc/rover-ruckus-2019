@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -79,4 +80,6 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract Orientation getAOrientation(AxesReference intrinsic, AxesOrder zyx, AngleUnit degrees);
 
     public abstract void setThrottle(double power);
+
+    public abstract void controlSystem(Gamepad gamepad1);
 }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Hardware.drive;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -89,6 +90,11 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
 
     @Override
     public void setThrottle(double power) {
+
+    }
+
+    @Override
+    public void controlSystem(Gamepad gamepad1) {
 
     }
 

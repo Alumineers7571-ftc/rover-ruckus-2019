@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware.drive;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.path.Path;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -7,6 +8,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -37,6 +39,8 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
 
     double correction, power = 0.7;
 
+    double powerMul = 1;
+
     public SampleMecanumDriveREV(HardwareMap hardwareMap) {
         super();
 
@@ -46,7 +50,6 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         pidRotate.setOutputRange(0, power);
         pidRotate.setInputRange(-180, 180);
         pidRotate.enable();
-
 
         // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -141,6 +144,20 @@ public class SampleMecanumDriveREV extends SampleMecanumDriveBase {
         setMotorPowers(power, power, power, power);
     }
 
+    @Override
+    public void controlSystem(Gamepad gamepad){
+
+        setVelocity(new Pose2d(-gamepad.left_stick_y * powerMul, -gamepad.left_stick_x * powerMul, -gamepad.right_stick_x * powerMul));
+
+        if(gamepad.right_bumper){
+            powerMul = 0.4;
+        } else if(gamepad.left_bumper){
+            powerMul = 0.75;
+        } else {
+            powerMul = 1;
+        }
+
+    }
 
 
 }

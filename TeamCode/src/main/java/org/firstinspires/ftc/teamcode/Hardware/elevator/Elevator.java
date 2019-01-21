@@ -22,7 +22,7 @@ public class Elevator {
             MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
     private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
 
-    public static double SPOOL_RADIUS = 1; // in
+    public static double SPOOL_RADIUS = 2; // in
     public static double GEAR_RATIO = 1; // output/input
 
     // the operating range of the elevator is restricted to [0, MAX_HEIGHT]
