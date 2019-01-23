@@ -180,11 +180,11 @@ public class Crater extends LinearOpMode{
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(40, -30, 0))
+                .splineTo(new Pose2d(40, -25, 0))
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(40, 30, 0))
+                .splineTo(new Pose2d(40, 25, 0))
                 .build();
 
         middleGold = robot.drive.trajectoryBuilder()
@@ -247,7 +247,7 @@ public class Crater extends LinearOpMode{
                     robot.hanger.controlHanger(-.3);
                     sleep(300);
                     robot.hanger.controlHanger(0);
-                    rotate(-180);
+                    rotate(-175);
 
                     robo = ENUMS.AutoStates.MOVETOSAMPLE;
                     break;
