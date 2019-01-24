@@ -106,10 +106,13 @@ public class InputManager {
         }
     }
 
-    public void replayInputs(){ //put in while loop
+    public boolean replayInputs(){ //put in while loop
         if(countReplays <= countLines) {
             dt.runMotorsIndiv(leftFrontValues[countReplays], rightFrontValues[countReplays], leftBackValues[countReplays], rightBackValues[countReplays]);
             countReplays++;
+            return true;
+        } else {
+            return false;   
         }
     }
 
