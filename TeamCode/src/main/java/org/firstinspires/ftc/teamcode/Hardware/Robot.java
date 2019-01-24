@@ -15,7 +15,7 @@ public class Robot{
     public MineralSystem mineralSystem = new MineralSystem();
     public Hanger hanger = new Hanger();
     public TeamMarkerer tm = new TeamMarkerer();
-
+    public InputManager inputManager = new InputManager();
 
     public Robot() {
 
@@ -31,7 +31,7 @@ public class Robot{
         mineralSystem.init(hardwareMap, telemetry);
         hanger.init(hardwareMap, telemetry);
         tm.init(hardwareMap, telemetry);
-
+        inputManager.init(hardwareMap, telemetry);
 
     }
 
