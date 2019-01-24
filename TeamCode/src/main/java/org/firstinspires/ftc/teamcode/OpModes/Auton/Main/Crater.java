@@ -181,18 +181,22 @@ public class Crater extends LinearOpMode{
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, -25, 0))
+                .backwards(40)
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, 25, 0))
+                .backwards(40)
                 .build();
 
         middleGold = robot.drive.trajectoryBuilder()
                 .forward(40)
+                .backwards(40)
                 .build();
 
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
                 .forward(40)
+                .backwards(40)
                 .build();
 
         Path sampleToDepot = new Path(new QuinticSplineSegment(
