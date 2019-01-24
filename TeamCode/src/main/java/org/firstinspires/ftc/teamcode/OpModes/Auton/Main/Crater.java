@@ -277,10 +277,38 @@ public class Crater extends LinearOpMode{
 
                     robot.drive.setDirectionForwards(DcMotorSimple.Direction.FORWARD);
 
-                    //rotate(-45);
+                    rotate(90);
+                    
+                    robot.inputManager.setupPlayback(FinalValues.craterSampleToWall);
 
+                    robo = ENUMS.AutoStates.FINDWALLFORDEPOT;
+                    break;
+                }
+                    
+                case FINDWALLFORDEPOT: {
+                 
+                    if(!robot.inputManager.replayInputs()){
+                        robo = ENUMS.AutoStates.DROPTM;   
+                    }
+                    
+                    break;
+                }
+                    
+                case DROPTM: {
+                 
+                    robot.tm.setTMDown();
+                    sleep(1000);
+                    robot.inputManager.setupPlayback(FinalValues.craterSampleToWall);  
+                    
                     robo = ENUMS.AutoStates.END;
                     break;
+                }
+                    
+                case END:{
+                 
+                    robot.inputManager.replayInputs();                           
+                    
+                     
                 }
             }
 
