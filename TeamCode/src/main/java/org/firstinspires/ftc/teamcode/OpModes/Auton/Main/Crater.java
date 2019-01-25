@@ -190,23 +190,23 @@ public class Crater extends LinearOpMode{
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(40, -25, 0))
-                .back(40)
+                .splineTo(new Pose2d(50, -25, 0))
+                .back(20)
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
-                .splineTo(new Pose2d(40, 25, 0))
-                .back(40)
+                .splineTo(new Pose2d(50, 25, 0))
+                .back(20)
                 .build();
 
         middleGold = robot.drive.trajectoryBuilder()
-                .forward(40)
-                .back(40)
+                .forward(50)
+                .back(20)
                 .build();
 
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
-                .forward(40)
-                .back(40)
+                .forward(50)
+                .back(20)
                 .build();
 
         Path sampleToDepot = new Path(new QuinticSplineSegment(
@@ -258,7 +258,7 @@ public class Crater extends LinearOpMode{
                     while(opModeIsActive() && !robot.hanger.isAtGround()){
                         robot.hanger.moveToGround();
                     }
-                    robot.hanger.controlHanger(-.3);
+                    robot.hanger.controlHanger(-.5);
                     sleep(300);
                     robot.hanger.controlHanger(0);
                     rotate(-178);
@@ -292,11 +292,11 @@ public class Crater extends LinearOpMode{
 
 
                     if(goldPos == ENUMS.GoldPosition.LEFT){
-                        distance = 60; //???
+                        distance = 72; //???
                     } else if(goldPos == ENUMS.GoldPosition.CENTER) {
-                        distance = 40; //see above
+                        distance = 72-14.5; //see above
                     } else {
-                        distance = 20;
+                        distance = 72 - (14.5 * 2);
                     }
 
                     robo = ENUMS.AutoStates.FINDWALLFORDEPOT;
@@ -305,11 +305,15 @@ public class Crater extends LinearOpMode{
                     
                 case FINDWALLFORDEPOT: {
 
-                    robot.drive.encoderDrive(0.6, distance, distance, opModeIsActive());
+                    robot.drive.encoderDrive(0.3, distance, distance, opModeIsActive());
+
+                    telemetry.update();
 
                     rotate(45);
 
-                    robot.drive.encoderDrive(0.6, distToDepot, distToDepot, opModeIsActive());
+                    telemetry.update();
+
+                    robot.drive.encoderDrive(0.3, distToDepot, distToDepot, opModeIsActive());
 
                     robo = ENUMS.AutoStates.DROPTM;
                     break;
@@ -334,6 +338,7 @@ public class Crater extends LinearOpMode{
 
             //telemetry.log().clear();
             //telemetry.log().add("x of gold: " + detector.getXPosition());
+            telemetry.addLine("angle: " + robot.drive.getExternalHeading());
             telemetry.addLine("state: " + robo);
             telemetry.update();
 
