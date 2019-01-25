@@ -82,4 +82,6 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     public abstract void setThrottle(double power);
 
     public abstract void controlSystem(Gamepad gamepad1);
+
+    public abstract void encoderDrive(double v, double distance, double distance1, boolean b);
 }

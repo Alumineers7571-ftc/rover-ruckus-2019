@@ -75,7 +75,14 @@ public class Crater extends LinearOpMode{
     Orientation lastAngles = new Orientation();
     double globalAngle, power = .7, correction;
 
+    double distance;
+
     double xPos = 0;
+
+    final double DISTANCE_FROM_TM_TO_CRATER = 100; //inches
+
+    int distToDepot = 120;
+    int distToCrater = -190;
 
     //SampleMecanumDriveBase drive = new SampleMecanumDriveREV(hardwareMap);
 
@@ -175,28 +182,31 @@ public class Crater extends LinearOpMode{
                 .splineTo(new Pose2d(20, 55, 0))
                 .build();
 */
+
+
+
         AssetsTrajectoryLoader loader = new AssetsTrajectoryLoader();
 
         Trajectory leftGoldTrajectory = null, rightGold = null, middleGold = null;
 
         leftGoldTrajectory = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, -25, 0))
-                .backwards(40)
+                .back(40)
                 .build();
 
         rightGold = robot.drive.trajectoryBuilder()
                 .splineTo(new Pose2d(40, 25, 0))
-                .backwards(40)
+                .back(40)
                 .build();
 
         middleGold = robot.drive.trajectoryBuilder()
                 .forward(40)
-                .backwards(40)
+                .back(40)
                 .build();
 
         Trajectory sampleTrajectory = robot.drive.trajectoryBuilder()
                 .forward(40)
-                .backwards(40)
+                .back(40)
                 .build();
 
         Path sampleToDepot = new Path(new QuinticSplineSegment(
@@ -251,7 +261,7 @@ public class Crater extends LinearOpMode{
                     robot.hanger.controlHanger(-.3);
                     sleep(300);
                     robot.hanger.controlHanger(0);
-                    rotate(-175);
+                    rotate(-178);
 
                     robo = ENUMS.AutoStates.MOVETOSAMPLE;
                     break;
@@ -278,35 +288,45 @@ public class Crater extends LinearOpMode{
                     robot.drive.setDirectionForwards(DcMotorSimple.Direction.FORWARD);
 
                     rotate(90);
-                    
-                    robot.inputManager.setupPlayback(FinalValues.craterSampleToWall);
+
+
+
+                    if(goldPos == ENUMS.GoldPosition.LEFT){
+                        distance = 60; //???
+                    } else if(goldPos == ENUMS.GoldPosition.CENTER) {
+                        distance = 40; //see above
+                    } else {
+                        distance = 20;
+                    }
 
                     robo = ENUMS.AutoStates.FINDWALLFORDEPOT;
                     break;
                 }
                     
                 case FINDWALLFORDEPOT: {
-                 
-                    if(!robot.inputManager.replayInputs()){
-                        robo = ENUMS.AutoStates.DROPTM;   
-                    }
-                    
+
+                    robot.drive.encoderDrive(0.6, distance, distance, opModeIsActive());
+
+                    rotate(45);
+
+                    robot.drive.encoderDrive(0.6, distToDepot, distToDepot, opModeIsActive());
+
+                    robo = ENUMS.AutoStates.DROPTM;
                     break;
                 }
                     
                 case DROPTM: {
                  
                     robot.tm.setTMDown();
-                    sleep(1000);
-                    robot.inputManager.setupPlayback(FinalValues.craterSampleToWall);  
+                    sleep(750);
+
+                    robot.drive.encoderDrive(0.6, -distToCrater, -distToCrater, opModeIsActive());
                     
                     robo = ENUMS.AutoStates.END;
                     break;
                 }
                     
                 case END:{
-                 
-                    robot.inputManager.replayInputs();                           
                     
                      
                 }

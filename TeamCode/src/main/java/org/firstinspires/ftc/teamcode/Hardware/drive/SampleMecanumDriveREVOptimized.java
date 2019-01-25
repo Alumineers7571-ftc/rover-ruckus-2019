@@ -98,6 +98,11 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
 
     }
 
+    @Override
+    public void encoderDrive(double v, double distance, double distance1, boolean b) {
+
+    }
+
     @NotNull
     @Override
     public List<Double> getWheelPositions() {
